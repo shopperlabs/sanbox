@@ -1,0 +1,25 @@
+{
+  "name": "shopper/sandbox",
+  "description": "Sandbox with demo seeders and shared storage for developing with Shopper.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Shopper\\Sandbox\\": "src/",
+      "Shopper\\Sandbox\\Seeders\\": "database/seeders/",
+      "Shopper\\Sandbox\\Seeders\\Concerns\\": "database/seeders/Concerns/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Shopper\\Sandbox\\SandboxServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
