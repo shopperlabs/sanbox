@@ -6,6 +6,7 @@ namespace Shopper\Sandbox\Seeders;
 
 use Shopper\Sandbox\Seeders\Concerns\WithProgressBar;
 use Illuminate\Database\Seeder;
+use ReflectionFunction;
 use Shopper\Core\Enum\OrderStatus;
 use Shopper\Core\Models\Channel;
 use Shopper\Core\Models\Order;
@@ -58,9 +59,11 @@ class OrderSeeder extends Seeder
         $paymentMethod = PaymentMethod::query()->first();
         $currencyCode = shopper_currency();
 
+        $numberIsAutoFilled = (new ReflectionFunction('generate_number'))->getNumberOfRequiredParameters() > 0;
+
         $this->command->warn(PHP_EOL.'Creating orders...');
 
-        $this->withProgressBar(50, function () use ($customers, $products, $variants, $channel, $paymentMethod, $currencyCode, $zoneCountryNames, $userModel) {
+        $this->withProgressBar(50, function () use ($customers, $products, $variants, $channel, $paymentMethod, $currencyCode, $zoneCountryNames, $userModel, $numberIsAutoFilled) {
             $customer = $customers->random();
             $countryName = $zoneCountryNames->random();
 
@@ -95,7 +98,7 @@ class OrderSeeder extends Seeder
             $createdAt = fake()->dateTimeBetween('-1 year');
 
             $order = Order::query()->create([
-                'number' => generate_number(),
+                ...($numberIsAutoFilled ? [] : ['number' => generate_number()]),
                 'status' => $status,
                 'currency_code' => $currencyCode,
                 'customer_id' => $customer->id,
